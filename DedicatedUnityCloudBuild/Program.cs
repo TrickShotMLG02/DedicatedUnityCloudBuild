@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DedicatedUnityCloudBuild // Note: actual namespace depends on the project name.
+namespace DedicatedUnityCloudBuild
 {
     internal class Program
     {
