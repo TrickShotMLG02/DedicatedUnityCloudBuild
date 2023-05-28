@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DedicatedUnityCloudBuild", "DedicatedUnityCloudBuild\DedicatedUnityCloudBuild.csproj", "{A353661F-F32B-4E3E-9C00-4332AC8F94F0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A353661F-F32B-4E3E-9C00-4332AC8F94F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A353661F-F32B-4E3E-9C00-4332AC8F94F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A353661F-F32B-4E3E-9C00-4332AC8F94F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A353661F-F32B-4E3E-9C00-4332AC8F94F0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5E2FB501-D76C-4A88-B94E-3CC5CE77C610}
+	EndGlobalSection
+EndGlobal
