@@ -27,5 +27,10 @@ namespace DedicatedUnityCloudBuild.Config
             gitUrl = "Enter your git url here";
             BuildNumber = -1;
         }
+
+        public override string ToString()
+        {
+            return "Project Name: " + ProjectName + "\nYour Git URL of your project: " + gitUrl + "\nLast Build Number: " + BuildNumber;
+        }
     }
 }

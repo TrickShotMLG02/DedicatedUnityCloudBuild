@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Serialization;
 
+using DedicatedUnityCloudBuild.Variables;
+using DedicatedUnityCloudBuild.Log;
+
 namespace DedicatedUnityCloudBuild.Config
 {
     internal class ConfigManager
@@ -13,14 +16,11 @@ namespace DedicatedUnityCloudBuild.Config
         // singleton pattern
         public static ConfigManager Instance { get; private set; }
 
-        // path of the application currently executed
-        private String applicationPath;
-
         // path of the config file
-        private String configPath;
+        private String _configPath = ProgramVariables.configPath;
 
         // Config file container
-        private Config config;
+        private Config _config;
 
         // constructor
         public ConfigManager()
@@ -28,18 +28,22 @@ namespace DedicatedUnityCloudBuild.Config
             // check if there is already instance of ConfigManager
             if (Instance != null)
             {
-                throw new Exception("ConfigManager already exists!");
+                Logger.Instance.LogError("ConfigManager Instance already exists!");
+
+                // throw new Exception("ConfigManager already exists!");
             }
             else
             {
                 // else set current object as Instance
                 Instance = this;
 
+                if (ProgramVariables.verbose)
+                    Logger.Instance.LogInfo("Created new ConfigManager Instance");
+
                 // initialize variables
-                applicationPath = AppDomain.CurrentDomain.BaseDirectory;
-                configPath = applicationPath + "/config.xml";
 
                 // try to load Config File
+                LoadConfig();
             }
         }
 
@@ -48,8 +52,11 @@ namespace DedicatedUnityCloudBuild.Config
         public void LoadConfig()
         {
             // check if config file exists at configPath
-            if (!File.Exists(configPath))
+            if (!File.Exists(_configPath))
             {
+                Logger.Instance.LogInfo("Config File doesn't exist yet!");
+                Logger.Instance.LogInfo("Creating new one...");
+
                 // if not, create it
                 CreateConfig();
 
@@ -57,13 +64,17 @@ namespace DedicatedUnityCloudBuild.Config
                 SaveConfig();
             }
 
-            // TODO: Load config file and deserialize it
-            DeserializeConfig();
+            //Load config file and deserialize it
+            if (!DeserializeConfig())
+            {
+                // if deserialization fails, try to fix corrupted config file
+                FixCorruptedConfig();
+            }
         }
 
         public void SaveConfig()
         {
-            // TODO: save config file and serialize it
+            //save config file and serialize it
             SerializeConfig();
         }
 
@@ -74,13 +85,17 @@ namespace DedicatedUnityCloudBuild.Config
         private void CreateConfig()
         {
             // create config
-            config = new Config();
-            throw new NotImplementedException();
+            _config = new Config();
+            Logger.Instance.LogInfo("Config created at path " + _configPath);
+
+            // throw new NotImplementedException();
         }
 
         private void FixCorruptedConfig()
         {
             // fix corrupted config file
+            Logger.Instance.LogInfo("Fixing corrupted config file...");
+
             throw new NotImplementedException();
         }
 
@@ -88,16 +103,62 @@ namespace DedicatedUnityCloudBuild.Config
 
         #region XML Serialization/Deserialization
 
-        private Config DeserializeConfig()
+        // deserialize config from file
+        private bool DeserializeConfig()
         {
-            // deserialize config from file
-            throw new NotImplementedException();
+            try
+            {
+                // create new XML Serializer
+                XmlSerializer x = new XmlSerializer(typeof(Config));
+
+                // create new stream reader
+                TextReader _reader = new StreamReader(_configPath);
+
+                // deserialize config file to config object
+                _config = (Config)x.Deserialize(_reader);
+
+                _reader.Close();
+
+                // return true for success
+                if (ProgramVariables.verbose)
+                    Logger.Instance.Log("Config file successfully deserialized and loaded");
+
+                Logger.Instance.LogInfoBlock("Loaded Config with following settings", _config.ToString());
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.LogErrorBlock(e);
+                return false;
+            }
         }
 
+        // serialize config to file
         private bool SerializeConfig()
         {
-            // serialize config to file
-            throw new NotImplementedException();
+            try
+            {
+                // create new XML Serializer
+                XmlSerializer x = new XmlSerializer(typeof(Config));
+
+                // create new stream writer
+                TextWriter _writer = new StreamWriter(_configPath);
+
+                // serialize config object
+                x.Serialize(_writer, _config);
+
+                _writer.Close();
+
+                // return true for success
+                if (ProgramVariables.verbose)
+                    Logger.Instance.Log("Config file successfully serialized");
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.LogErrorBlock(e);
+                return false;
+            }
         }
 
         #endregion XML Serialization/Deserialization
