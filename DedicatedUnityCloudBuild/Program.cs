@@ -2,6 +2,7 @@
 using DedicatedUnityCloudBuild.Config;
 using DedicatedUnityCloudBuild.Log;
 using DedicatedUnityCloudBuild.Variables;
+using DedicatedUnityCloudBuild.WebServer;
 
 namespace DedicatedUnityCloudBuild
 {
@@ -11,6 +12,7 @@ namespace DedicatedUnityCloudBuild
         {
             // Initialize ConfigManager
             new ConfigManager();
+            new HttpServer();
         }
 
         private static void Main(string[] args)
@@ -21,6 +23,9 @@ namespace DedicatedUnityCloudBuild
 
             // Initialize all other instances
             initializeInstances();
+
+            // Save Config
+            ConfigManager.Instance.SaveConfig();
         }
     }
 }
