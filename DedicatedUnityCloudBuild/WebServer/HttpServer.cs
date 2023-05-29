@@ -47,8 +47,10 @@ namespace DedicatedUnityCloudBuild.WebServer
                 if (ProgramVariables.verbose)
                     Logger.Instance.LogInfo("Created new HttpServer Instance");
 
-                // Start HttpServer
-                StartServer();
+                // Start HttpServer in seperate thread
+                new Thread(new ThreadStart(StartServer)).Start();
+
+                //StartServer();
             }
         }
 
