@@ -1,6 +1,7 @@
 ﻿using System;
 
 using DedicatedUnityCloudBuild.Config;
+using DedicatedUnityCloudBuild.GitManagement;
 using DedicatedUnityCloudBuild.Log;
 using DedicatedUnityCloudBuild.Variables;
 using DedicatedUnityCloudBuild.WebServer;
@@ -16,12 +17,18 @@ namespace DedicatedUnityCloudBuild
 
             // Initialize Http Server
             new HttpServer();
+
+            // Initialize Git Checker
+            new GitChecker();
         }
 
         private static void shutdownInstances()
         {
             // Stop HttpServer
             HttpServer.Instance.Dispose();
+
+            // Stop GitChecker
+            GitChecker.Instance.Dispose();
 
             // Stop ConfigManager
             ConfigManager.Instance.Dispose();
@@ -40,6 +47,9 @@ namespace DedicatedUnityCloudBuild
 
             // Initialize all other instances
             initializeInstances();
+
+            // keep program running
+            while (true) ;
 
             /////////////////////////
             //                     //
