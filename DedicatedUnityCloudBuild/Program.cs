@@ -20,8 +20,13 @@ namespace DedicatedUnityCloudBuild
 
         private static void shutdownInstances()
         {
+            // Stop HttpServer
             HttpServer.Instance.Dispose();
+
+            // Stop ConfigManager
             ConfigManager.Instance.Dispose();
+
+            // Stop Logger
             Logger.Instance.Dispose();
         }
 
@@ -29,12 +34,18 @@ namespace DedicatedUnityCloudBuild
         {
             // Initialize Logger
             new Logger();
+
+            // Greet user
             Logger.Instance.LogInfoBlock(ProgramVariables.applicationName + " v" + ProgramVariables.applicationVersion, "Thank you for using this Program. If you have any issues, feel free to open an issue on the following page: " + ProgramVariables.repoURL);
 
             // Initialize all other instances
             initializeInstances();
 
-            // for the termination
+            /////////////////////////
+            //                     //
+            // for the termination //
+            //                     //
+            /////////////////////////
 
             // Save Config
             ConfigManager.Instance.SaveConfig();
