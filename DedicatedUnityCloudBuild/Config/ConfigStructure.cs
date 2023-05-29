@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using DedicatedUnityCloudBuild.Variables;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace DedicatedUnityCloudBuild.Config
 {
@@ -15,6 +17,10 @@ namespace DedicatedUnityCloudBuild.Config
         // URL to github Repository
         [JsonInclude]
         public string GitUrl { get; private set; }
+
+        // Path for local git clone
+        [JsonInclude]
+        public string GitRepoPath { get; private set; }
 
         // Number of the build
         [JsonInclude]
@@ -43,6 +49,9 @@ namespace DedicatedUnityCloudBuild.Config
             if (GitUrl == null)
                 GitUrl = "Enter your git url here";
 
+            if (GitRepoPath == null)
+                GitRepoPath = ProgramVariables.applicationPath + "clone";
+
             if (BuildNumber == null)
                 BuildNumber = -1;
 
@@ -62,6 +71,9 @@ namespace DedicatedUnityCloudBuild.Config
             if (GitUrl == null)
                 return false;
 
+            if (GitRepoPath == null)
+                return false;
+
             if (BuildNumber == null)
                 return false;
 
@@ -76,7 +88,11 @@ namespace DedicatedUnityCloudBuild.Config
 
         public override string ToString()
         {
-            return "Project Name: " + ProjectName + "\nYour Git URL of your project: " + GitUrl + "\nLast Build Number: " + BuildNumber;
+            var properties = GetType().GetProperties();
+            var values = properties.Select(property => $"{property.Name}: {property.GetValue(this)}");
+            return string.Join("\n", values);
+
+            //return "Project Name: " + ProjectName + "\nYour Git URL of your project: " + GitUrl + "\nLast Build Number: " + BuildNumber;
         }
     }
 }

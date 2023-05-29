@@ -13,7 +13,16 @@ namespace DedicatedUnityCloudBuild
         {
             // Initialize ConfigManager
             new ConfigManager();
+
+            // Initialize Http Server
             new HttpServer();
+        }
+
+        private static void shutdownInstances()
+        {
+            HttpServer.Instance.Dispose();
+            ConfigManager.Instance.Dispose();
+            Logger.Instance.Dispose();
         }
 
         private static void Main(string[] args)
@@ -25,8 +34,13 @@ namespace DedicatedUnityCloudBuild
             // Initialize all other instances
             initializeInstances();
 
+            // for the termination
+
             // Save Config
             ConfigManager.Instance.SaveConfig();
+
+            // shut down all instances
+            shutdownInstances();
         }
     }
 }
