@@ -52,6 +52,16 @@ namespace DedicatedUnityCloudBuild.WebServer
             }
         }
 
+        public void Dispose()
+        {
+            StopServer();
+
+            if (ProgramVariables.verbose)
+                Logger.Instance.LogInfo("Disposed HttpServer Instance");
+
+            Instance = null;
+        }
+
         public async Task HandleIncomingConnections()
         {
             // While a user hasn't visited the `shutdown` url, keep on handling requests
@@ -122,6 +132,8 @@ namespace DedicatedUnityCloudBuild.WebServer
         {
             if (isRunning)
             {
+                Logger.Instance.LogInfo("Stopping HttpServer...");
+
                 isRunning = false;
                 connectionListener.Dispose();
 

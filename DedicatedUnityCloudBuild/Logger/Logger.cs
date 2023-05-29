@@ -28,6 +28,14 @@ namespace DedicatedUnityCloudBuild.Log
             }
         }
 
+        public void Dispose()
+        {
+            if (ProgramVariables.verbose)
+                Logger.Instance.LogInfo("Disposed Logger Instance");
+
+            Instance = null;
+        }
+
         private string CurrTime()
         {
             return DateTime.Now.ToString("HH:mm:ss") + ": ";
@@ -38,6 +46,8 @@ namespace DedicatedUnityCloudBuild.Log
             // TODO: Create Log File
             throw new NotImplementedException();
         }
+
+        #region Log Methods
 
         // log message
         public void Log(string message)
@@ -137,5 +147,7 @@ namespace DedicatedUnityCloudBuild.Log
             Console.WriteLine(new String('\n', numberOfLineBreaks));
             Console.ResetColor();
         }
+
+        #endregion Log Methods
     }
 }

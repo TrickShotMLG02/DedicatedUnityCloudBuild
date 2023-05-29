@@ -8,7 +8,7 @@ namespace DedicatedUnityCloudBuild.Config
     internal class ConfigManager
     {
         // singleton pattern
-        public static ConfigManager Instance { get; private set; }
+        public static ConfigManager? Instance { get; private set; }
 
         // path of the config file
         private String _configPath = ProgramVariables.configPath;
@@ -41,6 +41,14 @@ namespace DedicatedUnityCloudBuild.Config
             }
         }
 
+        public void Dispose()
+        {
+            if (ProgramVariables.verbose)
+                Logger.Instance.LogInfo("Disposed ConfigManager Instance");
+
+            Instance = null;
+        }
+
         #region Config Load/Save
 
         public void LoadConfig()
@@ -61,8 +69,22 @@ namespace DedicatedUnityCloudBuild.Config
             //Load config file and deserialize it
             if (!DeserializeConfig())
             {
-                // if deserialization fails, try to fix corrupted config file
-                FixCorruptedConfig();
+                // if deserialization failed, file was fixed, so load config again
+                LoadConfig();
+
+                // ASK USER TO CHECK CONFIG VALUES AND PRESS n TO CONTINUE or y to exit
+                String title = "Corrupted Config File was fixed";
+                String promt = "Please check all entries above and verify that they have the correct values assigned.\nPlease note that invalid values could lead to unwanted behaviour and could potentionally perform harmful operations!\n\nDo you want to terminate the program to edit the values? (y/n)";
+
+                if (CmdUtil.Utilities.AskConfirm(title, promt))
+                {
+                    // terminate program
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    // continue
+                }
             }
         }
 
@@ -120,6 +142,7 @@ namespace DedicatedUnityCloudBuild.Config
                 {
                     // fix config since there was a null field
                     FixCorruptedConfig();
+                    return false;
                 }
 
                 Logger.Instance.LogInfoBlock("Loaded Config with following settings", cfg.ToString());
