@@ -18,7 +18,7 @@ namespace DedicatedUnityCloudBuild.Config
 
         // Number of the build
         [JsonInclude]
-        public int? BuildNumber { get; private set; }
+        public int? BuildNumber { get; set; }
 
         // url of the webserver
         [JsonInclude]
