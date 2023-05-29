@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Xml.Serialization;
+﻿using System.Text.Json;
 
 using DedicatedUnityCloudBuild.Variables;
 using DedicatedUnityCloudBuild.Log;
@@ -84,19 +78,22 @@ namespace DedicatedUnityCloudBuild.Config
 
         private void CreateConfig()
         {
-            // create config
+            // create new config with default values
             cfg = new Config();
-            Logger.Instance.LogInfo("Config created at path " + _configPath);
-
-            // throw new NotImplementedException();
+            Logger.Instance.LogInfo("Created new config with default values at path " + _configPath);
         }
 
         private void FixCorruptedConfig()
         {
             // fix corrupted config file
-            Logger.Instance.LogInfo("Fixing corrupted config file...");
+            Logger.Instance.LogWarningBlock("Config File is corrupted", "Fixing corrupted config file by copying default values to corrupted fields...");
 
-            throw new NotImplementedException();
+            // Valid config values have been loaded, but some are missing
+            // set Default Values to those fields which are null
+            cfg.SetDefaults();
+
+            // Save fixed config to disk
+            SerializeConfig();
         }
 
         #endregion Config Creation/Fixing
@@ -108,20 +105,22 @@ namespace DedicatedUnityCloudBuild.Config
         {
             try
             {
-                // create new XML Serializer
-                XmlSerializer x = new XmlSerializer(typeof(Config));
+                // read config file to jsonString variable
+                String jsonString = File.ReadAllText(_configPath);
 
-                // create new stream reader
-                TextReader _reader = new StreamReader(_configPath);
-
-                // deserialize config file to config object
-                cfg = (Config)x.Deserialize(_reader);
-
-                _reader.Close();
+                // deserialize string to config object
+                cfg = JsonSerializer.Deserialize<Config>(jsonString);
 
                 // return true for success
                 if (ProgramVariables.verbose)
                     Logger.Instance.Log("Config file successfully deserialized and loaded");
+
+                // check if any field is null
+                if (!cfg.validateAllFIelds())
+                {
+                    // fix config since there was a null field
+                    FixCorruptedConfig();
+                }
 
                 Logger.Instance.LogInfoBlock("Loaded Config with following settings", cfg.ToString());
                 return true;
@@ -138,16 +137,15 @@ namespace DedicatedUnityCloudBuild.Config
         {
             try
             {
-                // create new XML Serializer
-                XmlSerializer x = new XmlSerializer(typeof(Config));
-
-                // create new stream writer
-                TextWriter _writer = new StreamWriter(_configPath);
+                // set json file to be indented (pretty printed)
+                JsonSerializerOptions options = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
 
                 // serialize config object
-                x.Serialize(_writer, cfg);
-
-                _writer.Close();
+                string jsonString = JsonSerializer.Serialize(cfg, options);
+                File.WriteAllText(_configPath, jsonString);
 
                 // return true for success
                 if (ProgramVariables.verbose)

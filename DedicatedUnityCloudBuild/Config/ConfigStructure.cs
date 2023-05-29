@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace DedicatedUnityCloudBuild.Config
 {
@@ -10,29 +6,72 @@ namespace DedicatedUnityCloudBuild.Config
     {
         // This is the data structure that will be used to store the config data.
 
+        #region JsonFields
+
         // Project Name
-        public string ProjectName { get; set; }
+        [JsonInclude]
+        public string ProjectName { get; private set; }
 
         // URL to github Repository
-        public string GitUrl { get; set; }
+        [JsonInclude]
+        public string GitUrl { get; private set; }
 
         // Number of the build
-        public int BuildNumber { get; set; }
+        [JsonInclude]
+        public int? BuildNumber { get; private set; }
 
-        public String WebServerURL { get; set; }
+        // url of the webserver
+        [JsonInclude]
+        public String WebServerURL { get; private set; }
 
-        public int WebServerPort { get; set; }
+        // port of the webserver
+        [JsonInclude]
+        public int? WebServerPort { get; private set; }
 
-        // constructor
-        public Config()
+        #endregion JsonFields
+
+        // constructor for Deserialization
+        public Config() { }
+
+        // constructor for creating new config with default values
+        public void SetDefaults()
         {
             // set default Values below
-            ProjectName = "Enter your Project name here";
-            GitUrl = "Enter your git url here";
-            BuildNumber = -1;
+            if (ProjectName == null)
+                ProjectName = "Enter your Project name here";
 
-            WebServerURL = "http://localhost";
-            WebServerPort = 8080;
+            if (GitUrl == null)
+                GitUrl = "Enter your git url here";
+
+            if (BuildNumber == null)
+                BuildNumber = -1;
+
+            if (WebServerURL == null)
+                WebServerURL = "http://localhost";
+
+            if (WebServerPort == null)
+                WebServerPort = 8080;
+        }
+
+        public bool validateAllFIelds()
+        {
+            // check if no variable is null
+            if (ProjectName == null)
+                return false;
+
+            if (GitUrl == null)
+                return false;
+
+            if (BuildNumber == null)
+                return false;
+
+            if (WebServerURL == null)
+                return false;
+
+            if (WebServerPort == null)
+                return false;
+
+            return true;
         }
 
         public override string ToString()

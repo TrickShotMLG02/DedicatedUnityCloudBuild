@@ -27,7 +27,7 @@ namespace DedicatedUnityCloudBuild.Variables
         #region Config Variables
 
         // path of the config file
-        public static string configPath = applicationPath + "/config.xml";
+        public static string configPath = applicationPath + "/config.json";
 
         #endregion Config Variables
 
