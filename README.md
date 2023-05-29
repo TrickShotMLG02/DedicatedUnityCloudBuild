@@ -5,7 +5,7 @@
 -->
 ---
 ## Work in Progress
-Current project is in early development state and has only basic functionality for testing purposes. It is not recommended to use it in production environment yet, since most of the features are not implemented yet.
+Current project is in development state and is already able to check for new commits and clone them into a local directory. It is currently not possible to create a build of that repository. This is the next thing I will address. It is not recommended to use it in production environment yet, since some of the features are not implemented yet.
 
 ---
 
