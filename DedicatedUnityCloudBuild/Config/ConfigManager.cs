@@ -20,7 +20,7 @@ namespace DedicatedUnityCloudBuild.Config
         private String _configPath = ProgramVariables.configPath;
 
         // Config file container
-        private Config _config;
+        public Config cfg;
 
         // constructor
         public ConfigManager()
@@ -85,7 +85,7 @@ namespace DedicatedUnityCloudBuild.Config
         private void CreateConfig()
         {
             // create config
-            _config = new Config();
+            cfg = new Config();
             Logger.Instance.LogInfo("Config created at path " + _configPath);
 
             // throw new NotImplementedException();
@@ -115,7 +115,7 @@ namespace DedicatedUnityCloudBuild.Config
                 TextReader _reader = new StreamReader(_configPath);
 
                 // deserialize config file to config object
-                _config = (Config)x.Deserialize(_reader);
+                cfg = (Config)x.Deserialize(_reader);
 
                 _reader.Close();
 
@@ -123,7 +123,7 @@ namespace DedicatedUnityCloudBuild.Config
                 if (ProgramVariables.verbose)
                     Logger.Instance.Log("Config file successfully deserialized and loaded");
 
-                Logger.Instance.LogInfoBlock("Loaded Config with following settings", _config.ToString());
+                Logger.Instance.LogInfoBlock("Loaded Config with following settings", cfg.ToString());
                 return true;
             }
             catch (Exception e)
@@ -145,7 +145,7 @@ namespace DedicatedUnityCloudBuild.Config
                 TextWriter _writer = new StreamWriter(_configPath);
 
                 // serialize config object
-                x.Serialize(_writer, _config);
+                x.Serialize(_writer, cfg);
 
                 _writer.Close();
 
