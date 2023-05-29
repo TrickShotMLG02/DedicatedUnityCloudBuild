@@ -1,4 +1,5 @@
 ﻿using DedicatedUnityCloudBuild.Variables;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
@@ -18,13 +19,25 @@ namespace DedicatedUnityCloudBuild.Config
         [JsonInclude]
         public string GitUrl { get; private set; }
 
+        // Branch to use
+        [JsonInclude]
+        public string RepoBranch { get; private set; }
+
+        // Access Token for github
+        [JsonInclude]
+        public string GitHubAccessToken { get; private set; }
+
         // Path for local git clone
         [JsonInclude]
         public string GitRepoPath { get; private set; }
 
         // Number of the build
         [JsonInclude]
-        public int? BuildNumber { get; set; }
+        public string LastCommitId { get; set; }
+
+        // Interval in seconds for fetching new commits
+        [JsonInclude]
+        public int? FetchInterval { get; private set; }
 
         // url of the webserver
         [JsonInclude]
@@ -49,11 +62,20 @@ namespace DedicatedUnityCloudBuild.Config
             if (GitUrl == null)
                 GitUrl = "Enter your git url here";
 
+            if (RepoBranch == null)
+                RepoBranch = "master";
+
+            if (GitHubAccessToken == null)
+                GitHubAccessToken = "Enter your PAT here";
+
             if (GitRepoPath == null)
                 GitRepoPath = ProgramVariables.applicationPath + "clone";
 
-            if (BuildNumber == null)
-                BuildNumber = -1;
+            if (LastCommitId == null)
+                LastCommitId = "This will be populated automatically";
+
+            if (FetchInterval == null)
+                FetchInterval = 60;
 
             if (WebServerURL == null)
                 WebServerURL = "http://localhost";
@@ -64,26 +86,9 @@ namespace DedicatedUnityCloudBuild.Config
 
         public bool validateAllFIelds()
         {
-            // check if no variable is null
-            if (ProjectName == null)
-                return false;
-
-            if (GitUrl == null)
-                return false;
-
-            if (GitRepoPath == null)
-                return false;
-
-            if (BuildNumber == null)
-                return false;
-
-            if (WebServerURL == null)
-                return false;
-
-            if (WebServerPort == null)
-                return false;
-
-            return true;
+            // check if all fields are set
+            PropertyInfo[] properties = GetType().GetProperties();
+            return !properties.Any(property => property.GetValue(this) == null);
         }
 
         public override string ToString()
