@@ -3,7 +3,11 @@
 <!--
 ![Logo](link_to_logo.png)
 -->
+---
+## Work in Progress
+Current project is in early development state and has only basic functionality for testing purposes. It is not recommended to use it in production environment yet, since most of the features are not implemented yet.
 
+---
 
 ## Summary
 
