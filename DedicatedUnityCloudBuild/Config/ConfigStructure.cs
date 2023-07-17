@@ -27,6 +27,14 @@ namespace DedicatedUnityCloudBuild.Config
         [JsonInclude]
         public string GitHubAccessToken { get; private set; }
 
+        // Name for github
+        [JsonInclude]
+        public string GitName { get; private set; }
+
+        // Email for github
+        [JsonInclude]
+        public string GitEmail { get; private set; }
+
         // Path for local git clone
         [JsonInclude]
         public string GitRepoPath { get; private set; }
@@ -64,6 +72,12 @@ namespace DedicatedUnityCloudBuild.Config
 
             if (RepoBranch == null)
                 RepoBranch = "master";
+
+            if (GitName == null)
+                RepoBranch = "Enter your Git Name here";
+
+            if (GitEmail == null)
+                RepoBranch = "Enter your Git Email here";
 
             if (GitHubAccessToken == null)
                 GitHubAccessToken = "Enter your PAT here";

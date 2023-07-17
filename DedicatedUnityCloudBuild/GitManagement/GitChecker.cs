@@ -41,24 +41,48 @@ namespace DedicatedUnityCloudBuild.GitManagement
             // check for a new commit by grabbing latest commit from remote repository and comparing it to local stored value
             Logger.Instance.Log("Checking for new commits in remote Repository...");
 
-            string latestCommitId = await GetLatestCommitId();
-            if (ProgramVariables.verbose)
-                Logger.Instance.Log("Latest Commit ID: " + latestCommitId);
+            string latestRemoteCommitId = await GetLatestCommitId();
 
-            if (latestCommitId != ConfigManager.Instance.cfg.LastCommitId)
+            if (ProgramVariables.verbose)
+                Logger.Instance.Log("Latest Commit ID: " + latestRemoteCommitId);
+
+            string localCommitId = "";
+
+            using (var repo = new Repository(ConfigManager.Instance.cfg.GitRepoPath))
             {
-                Logger.Instance.LogBlock("New Commit found", "Last downloaded commit was " + ConfigManager.Instance.cfg.LastCommitId + ".\nLatest CommitId of remote repository is " + latestCommitId + "\n\nCloning repository into " + ConfigManager.Instance.cfg.GitRepoPath);
+                // Retrieve the current commit ID of the branch you're interested in
+                var branch = repo.Head; // or specify a specific branch name: repo.Branches["branchName"]
+                var commitId = branch.Tip.Id;
+
+                // extract lates commit id from local repository
+                localCommitId = commitId.ToString();
+            }
+
+            if (latestRemoteCommitId != localCommitId)
+            {
+                Logger.Instance.LogBlock("New Commit found", "Last downloaded commit was " + ConfigManager.Instance.cfg.LastCommitId + ".\nLatest CommitId of remote repository is " + latestRemoteCommitId + "\n\nCloning repository into " + ConfigManager.Instance.cfg.GitRepoPath);
 
                 // store latest commit id in config and save it
-                ConfigManager.Instance.cfg.LastCommitId = latestCommitId;
+                ConfigManager.Instance.cfg.LastCommitId = latestRemoteCommitId;
                 ConfigManager.Instance.SaveConfig();
 
-                //clone repository
-                CloneRepository();
+                // check if repository exists -> pull changes
+                // otherwhise clone repository
+
+                if (Repository.IsValid(ConfigManager.Instance.cfg.GitRepoPath))
+                {
+                    // pull changes since repository already exists
+                    PullChanges();
+                }
+                else
+                {
+                    // clone repository since it doesnt exist yet
+                    CloneRepository();
+                }
             }
             else
             {
-                Logger.Instance.LogBlock("Already on latest commit", "Latest commit id is " + latestCommitId);
+                Logger.Instance.LogBlock("Already on latest commit", "Latest commit id is " + latestRemoteCommitId);
             }
         }
 
@@ -109,6 +133,8 @@ namespace DedicatedUnityCloudBuild.GitManagement
 
             try
             {
+                Logger.Instance.LogInfo("Cloning repository...");
+
                 // Clone the repository
                 Repository.Clone(gitUrl, localPath, cloneOptions);
 
@@ -139,6 +165,75 @@ namespace DedicatedUnityCloudBuild.GitManagement
             catch (Exception e)
             {
                 Logger.Instance.LogErrorBlock("Clone of repository failed", e.StackTrace);
+            }
+        }
+
+        private void PullChanges()
+        {
+            string gitUrl = ConfigManager.Instance.cfg.GitUrl;
+
+            // Branch name to clone
+            string gitBranch = ConfigManager.Instance.cfg.RepoBranch;
+
+            // Personal access token for accessing the repository
+            string personalAccessToken = ConfigManager.Instance.cfg.GitHubAccessToken;
+
+            // Local path where the repository will be cloned
+            string localPath = ConfigManager.Instance.cfg.GitRepoPath;
+
+            // Open the repository
+            using (var repo = new Repository(localPath))
+            {
+                Logger.Instance.LogInfo("Pulling changes...");
+
+                // Retrieve the reference to the remote branch you want to pull from
+                var remote = repo.Network.Remotes["origin"];
+                var remoteBranch = repo.Branches[$"{remote.Name}/{gitBranch}"];
+
+                // Retrieve the local branch you want to merge into
+                var localBranch = repo.Branches[gitBranch];
+
+                // Define the pull options
+                var pullOptions = new PullOptions
+                {
+                    MergeOptions = new MergeOptions
+                    {
+                        FileConflictStrategy = CheckoutFileConflictStrategy.Theirs
+                    },
+
+                    FetchOptions = new FetchOptions
+                    {
+                        CredentialsProvider = (_, __, ___) =>
+                        new UsernamePasswordCredentials
+                        {
+                            // Set the username as the personal access token
+                            Username = personalAccessToken,
+
+                            // Set an empty password
+                            Password = string.Empty
+                        }
+                    }
+                };
+
+                // Perform the pull, overwriting existing files
+                var mergeResult = Commands.Pull(repo, new Signature(ConfigManager.Instance.cfg.GitName, ConfigManager.Instance.cfg.GitEmail, DateTimeOffset.Now), pullOptions);
+
+                // Handle the merge result as needed
+                if (mergeResult.Status == MergeStatus.Conflicts)
+                {
+                    // Handle merge conflicts
+                    Logger.Instance.LogError("Merge conflicts occured");
+                }
+                else if (mergeResult.Status == MergeStatus.UpToDate)
+                {
+                    // Already up to date, no changes to pull
+                    Logger.Instance.LogInfo("Already up to date, no changes to pull");
+                }
+                else if (mergeResult.Status == MergeStatus.FastForward || mergeResult.Status == MergeStatus.NonFastForward)
+                {
+                    // Merge was successful
+                    Logger.Instance.LogInfo("Pull was successful");
+                }
             }
         }
 
