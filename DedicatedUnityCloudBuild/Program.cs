@@ -50,7 +50,7 @@ namespace DedicatedUnityCloudBuild
             new Logger();
 
             // Greet user
-            Logger.Instance.LogInfoBlock(ProgramVariables.applicationName + " v" + ProgramVariables.applicationVersion, "Thank you for using this Program. If you have any issues, feel free to open an issue on the following page: " + ProgramVariables.repoURL);
+            Logger.Instance.LogInfoBlock(ProgramVariables.applicationName + " v" + ProgramVariables.applicationVersion, "Thank you for using this Program. If you have any issues, feel free to open an issue on the following page:\n" + ProgramVariables.repoURL);
 
             // Initialize all other instances
             initializeInstances();
