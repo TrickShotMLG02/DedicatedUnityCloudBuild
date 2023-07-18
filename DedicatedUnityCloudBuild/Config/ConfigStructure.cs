@@ -15,6 +15,10 @@ namespace DedicatedUnityCloudBuild.Config
         [JsonInclude]
         public string ProjectName { get; private set; }
 
+        // Unity Editor Path
+        [JsonInclude]
+        public string UnityPath { get; private set; }
+
         // URL to github Repository
         [JsonInclude]
         public string GitUrl { get; private set; }
@@ -66,6 +70,9 @@ namespace DedicatedUnityCloudBuild.Config
             // set default Values below
             if (ProjectName == null)
                 ProjectName = "Enter your Project name here";
+
+            if (UnityPath == null)
+                UnityPath = "Enter your Unity Editor path here";
 
             if (GitUrl == null)
                 GitUrl = "Enter your git url here";
