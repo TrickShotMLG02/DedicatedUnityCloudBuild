@@ -8,11 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="UnityBuild\CustomBuildSettings.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="GitManagement\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.27.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="UnityBuild\CustomBuildSettings.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

@@ -54,6 +54,9 @@ namespace DedicatedUnityCloudBuild.UnityBuild
             DateTime startingTimeStamp = DateTime.Now;
             string buildLogPath = "{ACTUAL PATH HERE}";
 
+            // get path of unity executable used for building
+            string unityEditorPath = ConfigManager.Instance.cfg.UnityPath;
+
             //
             //
             // do build stuff here
@@ -74,6 +77,10 @@ namespace DedicatedUnityCloudBuild.UnityBuild
             ProgramVariables.readyForBuild = true;
 
             return buildSuccessful;
+        }
+
+        private void CreateBuildSettingsFile()
+        {
         }
 
         private string CurrTime()
