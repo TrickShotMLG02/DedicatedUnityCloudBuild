@@ -31,7 +31,7 @@ namespace DedicatedUnityCloudBuild.WebServer
             "<!DOCTYPE>" +
             "<html>" +
             "  <head>" +
-            "    <title>HttpListener Example</title>" +
+            $"    <title>CloudBuild - {ConfigManager.Instance.cfg.ProjectName}</title>" +
             "  </head>" +
             "  <body>" +
             "    <p>Page Views: {0}</p>" +
