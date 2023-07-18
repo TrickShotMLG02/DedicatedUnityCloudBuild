@@ -296,7 +296,10 @@ namespace DedicatedUnityCloudBuild.GitManagement
         public void StartDispatcher()
         {
             int interval = (int)ConfigManager.Instance.cfg.FetchInterval;
-            Logger.Instance.LogInfo("Scheduled Git Dispatcher started...");
+
+            if (ProgramVariables.verbose)
+                Logger.Instance.LogInfo("Scheduled Git Dispatcher started...");
+
             scheduler = new System.Timers.Timer(interval * 1000);
 
             // Hook up the Elapsed event for the timer.
