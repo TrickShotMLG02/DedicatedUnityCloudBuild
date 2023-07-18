@@ -7,6 +7,15 @@ using DedicatedUnityCloudBuild.Variables;
 
 namespace DedicatedUnityCloudBuild.WebServer
 {
+    #region DisableWarnings
+
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+
+    #endregion DisableWarnings
+
     internal class HttpServer
     {
         // singleton pattern

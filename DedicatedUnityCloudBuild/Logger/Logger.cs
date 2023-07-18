@@ -2,7 +2,13 @@
 
 namespace DedicatedUnityCloudBuild.Log
 {
-    // TODO: implement log file
+    #region DisableWarnings
+
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+
+    #endregion DisableWarnings
+
     internal class Logger
     {
         // singleton pattern
