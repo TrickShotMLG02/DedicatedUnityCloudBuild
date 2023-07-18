@@ -5,6 +5,7 @@ using DedicatedUnityCloudBuild.GitManagement;
 using DedicatedUnityCloudBuild.Log;
 using DedicatedUnityCloudBuild.Variables;
 using DedicatedUnityCloudBuild.WebServer;
+using DedicatedUnityCloudBuild.UnityBuild;
 
 namespace DedicatedUnityCloudBuild
 {
@@ -20,6 +21,9 @@ namespace DedicatedUnityCloudBuild
 
             // Initialize Git Checker
             new GitChecker();
+
+            // Initialize UnityBuild
+            new UnityBuildAgent();
         }
 
         private static void shutdownInstances()
@@ -29,6 +33,9 @@ namespace DedicatedUnityCloudBuild
 
             // Stop GitChecker
             GitChecker.Instance.Dispose();
+
+            // Stop UnityBuildAgent
+            UnityBuildAgent.Instance.Dispose();
 
             // Stop ConfigManager
             ConfigManager.Instance.Dispose();

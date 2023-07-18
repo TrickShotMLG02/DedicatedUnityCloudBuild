@@ -5,7 +5,6 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Timers;
 using LibGit2Sharp;
-using System.IO;
 
 namespace DedicatedUnityCloudBuild.GitManagement
 {
