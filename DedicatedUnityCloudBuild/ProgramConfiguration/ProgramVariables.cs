@@ -27,14 +27,14 @@ namespace DedicatedUnityCloudBuild.Variables
         #region Config Variables
 
         // path of the config file
-        public static string configPath = applicationPath + "/config.json";
+        public static string configPath = applicationPath + "\\config.json";
 
         #endregion Config Variables
 
         #region Log Variables
 
         // path of the log file
-        public static string logPath = applicationPath + "/log.txt";
+        public static string logPath = applicationPath + "\\log.txt";
 
         // log verbose or not
         public static bool verbose = false;
@@ -50,7 +50,7 @@ namespace DedicatedUnityCloudBuild.Variables
         public static bool readyForBuild = true;
 
         // path of the build folder
-        public static string buildPath = applicationPath + "/build";
+        public static string buildPath = applicationPath + "\\build";
 
         #endregion Build Variables
     }
