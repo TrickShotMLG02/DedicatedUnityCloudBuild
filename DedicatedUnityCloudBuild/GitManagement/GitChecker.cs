@@ -38,6 +38,14 @@ namespace DedicatedUnityCloudBuild.GitManagement
 
         private async void ScheduleGitCheck(object state, ElapsedEventArgs e)
         {
+            // check if a build is running currently
+            if (!ProgramVariables.readyForBuild)
+            {
+                // dont update local repository, since we are building right now
+                Logger.Instance.LogWarningBlock("Interrupted Git Check", "The scheduled git check was interrupted for security reasons, since a build process is currently running. The git check will run again in " + ConfigManager.Instance.cfg.FetchInterval + " seconds.");
+                return;
+            }
+
             // check for a new commit by grabbing latest commit from remote repository and comparing it to local stored value
             Logger.Instance.Log("Checking for new commits in remote Repository...");
 

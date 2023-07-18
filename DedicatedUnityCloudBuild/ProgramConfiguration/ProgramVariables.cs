@@ -46,6 +46,9 @@ namespace DedicatedUnityCloudBuild.Variables
 
         #region Build Variables
 
+        // variable stating wether a build is already running or not
+        public static bool readyForBuild;
+
         // path of the build folder
         public static string buildPath = applicationPath + "/build";
 
