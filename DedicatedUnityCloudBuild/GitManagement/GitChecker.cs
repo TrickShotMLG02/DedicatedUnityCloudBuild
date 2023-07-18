@@ -9,6 +9,19 @@ using DedicatedUnityCloudBuild.UnityBuild;
 
 namespace DedicatedUnityCloudBuild.GitManagement
 {
+    #region DisableWarnings
+
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8603 // Possible null reference return.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+#pragma warning disable CS8629 // Nullable value type may be null.
+
+    #endregion DisableWarnings
+
     public class GitChecker
     {
         public System.Timers.Timer scheduler;

@@ -5,6 +5,12 @@ using System.Text.RegularExpressions;
 
 namespace DedicatedUnityCloudBuild.Config
 {
+    #region disableWarnings
+
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+    #endregion disableWarnings
+
     public class Config
     {
         // This is the data structure that will be used to store the config data.
@@ -62,7 +68,9 @@ namespace DedicatedUnityCloudBuild.Config
         #endregion JsonFields
 
         // constructor for Deserialization
-        public Config() { }
+        public Config()
+        {
+        }
 
         // constructor for creating new config with default values
         public void SetDefaults()

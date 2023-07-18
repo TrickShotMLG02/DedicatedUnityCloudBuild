@@ -4,6 +4,12 @@ using DedicatedUnityCloudBuild.Variables;
 
 namespace DedicatedUnityCloudBuild.UnityBuild
 {
+    #region disableWarnings
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+    #endregion disableWarnings
+
     internal class UnityBuildAgent
     {
         public static UnityBuildAgent? Instance { get; private set; }

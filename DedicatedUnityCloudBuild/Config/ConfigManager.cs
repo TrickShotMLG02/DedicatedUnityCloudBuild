@@ -5,6 +5,15 @@ using DedicatedUnityCloudBuild.Log;
 
 namespace DedicatedUnityCloudBuild.Config
 {
+    #region disableWarnings
+
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+#pragma warning disable CS8601 // Possible null reference assignment.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+    #endregion disableWarnings
+
     internal class ConfigManager
     {
         // singleton pattern
