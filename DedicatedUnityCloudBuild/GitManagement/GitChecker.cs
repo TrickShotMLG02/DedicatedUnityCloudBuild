@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Timers;
 using LibGit2Sharp;
+using DedicatedUnityCloudBuild.UnityBuild;
 
 namespace DedicatedUnityCloudBuild.GitManagement
 {
@@ -55,20 +56,25 @@ namespace DedicatedUnityCloudBuild.GitManagement
 
             string localCommitId = "";
 
-            using (var repo = new Repository(ConfigManager.Instance.cfg.GitRepoPath))
+            if (Directory.Exists(ConfigManager.Instance.cfg.GitRepoPath))
             {
-                // Retrieve the current commit ID of the branch you're interested in
-                var branch = repo.Head; // or specify a specific branch name: repo.Branches["branchName"]
-                var commitId = branch.Tip.Id;
+                using (var repo = new Repository(ConfigManager.Instance.cfg.GitRepoPath))
+                {
+                    // Retrieve the current commit ID of the branch you're interested in
+                    var branch = repo.Head; // or specify a specific branch name: repo.Branches["branchName"]
+                    var commitId = branch.Tip.Id;
 
-                // extract lates commit id from local repository
-                localCommitId = commitId.ToString();
+                    // extract lates commit id from local repository
+                    localCommitId = commitId.ToString();
+
+                    // reset local repository to HEAD to avoid merge conflicts and always pull changes
+                    var headCommit = repo.Head.Tip;
+                    repo.Reset(ResetMode.Hard, headCommit);
+                }
             }
 
             if (latestRemoteCommitId != localCommitId)
             {
-                Logger.Instance.LogBlock("New Commit found", "Last downloaded commit was " + ConfigManager.Instance.cfg.LastCommitId + ".\nLatest CommitId of remote repository is " + latestRemoteCommitId + "\n\nCloning repository into " + ConfigManager.Instance.cfg.GitRepoPath);
-
                 // store latest commit id in config and save it
                 ConfigManager.Instance.cfg.LastCommitId = latestRemoteCommitId;
                 ConfigManager.Instance.SaveConfig();
@@ -78,14 +84,21 @@ namespace DedicatedUnityCloudBuild.GitManagement
 
                 if (Repository.IsValid(ConfigManager.Instance.cfg.GitRepoPath))
                 {
+                    Logger.Instance.LogBlock("New Commit found", "Last downloaded commit was " + localCommitId + ".\nLatest CommitId of remote repository is " + latestRemoteCommitId + "\n\nPulling changes into " + ConfigManager.Instance.cfg.GitRepoPath);
+
                     // pull changes since repository already exists
                     PullChanges();
                 }
                 else
                 {
+                    Logger.Instance.LogBlock("New Commit found", "Last downloaded commit was " + localCommitId + ".\nLatest CommitId of remote repository is " + latestRemoteCommitId + "\n\nCloning repository into " + ConfigManager.Instance.cfg.GitRepoPath);
+
                     // clone repository since it doesnt exist yet
                     CloneRepository();
                 }
+
+                // build game based on current commit
+                UnityBuildAgent.Instance.Build();
             }
             else
             {
